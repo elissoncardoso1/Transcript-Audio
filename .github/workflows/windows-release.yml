@@ -1,0 +1,129 @@
+name: Build and Release Windows
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  RELEASE_ZIP_NAME: transcript-audio-windows.zip
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install backend dependencies
+        run: |
+          if (-not (Test-Path requirements.txt)) {
+            Write-Error "requirements.txt not found"
+            exit 1
+          }
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+        shell: pwsh
+      
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install frontend dependencies
+        run: |
+          if (-not (Test-Path frontend)) {
+            Write-Error "frontend directory not found"
+            exit 1
+          }
+          cd frontend
+          npm install
+        shell: pwsh
+      
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm run build
+        shell: pwsh
+      
+      - name: Package application
+        run: |
+          mkdir release
+          
+          # Copy backend files
+          $files = @(
+            "app.py",
+            "run.py",
+            "requirements.txt",
+            "whisper_wrapper.py",
+            "whisper.cpp",
+            "LICENSE",
+            "README.md"
+          )
+          
+          foreach ($file in $files) {
+            if (Test-Path $file) {
+              Copy-Item -Path $file -Destination release/
+            }
+          }
+          
+          # Copy templates directory if exists
+          if (Test-Path templates) {
+            Copy-Item -Path templates -Destination release/ -Recurse
+          }
+          
+          # Copy frontend build
+          if (-not (Test-Path frontend/dist)) {
+            Write-Error "Frontend build failed - dist directory not found"
+            exit 1
+          }
+          Copy-Item -Path frontend/dist -Destination release/frontend-dist -Recurse
+          
+          # Create ZIP archive
+          Compress-Archive -Path release/* -DestinationPath $env:RELEASE_ZIP_NAME
+        shell: pwsh
+      
+      - name: Get commit info
+        id: commit_info
+        run: |
+          $SHORT_SHA = $env:GITHUB_SHA.Substring(0,7)
+          $TIMESTAMP = Get-Date -Format "yyyyMMdd-HHmmss"
+          echo "short_sha=$SHORT_SHA" >> $env:GITHUB_OUTPUT
+          echo "timestamp=$TIMESTAMP" >> $env:GITHUB_OUTPUT
+        shell: pwsh
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: release-${{ steps.commit_info.outputs.timestamp }}-${{ steps.commit_info.outputs.short_sha }}
+          name: Windows Release ${{ steps.commit_info.outputs.timestamp }}
+          body: |
+            Automated Windows release build
+            
+            **Commit:** ${{ github.sha }}
+            **Branch:** ${{ github.ref_name }}
+            **Built on:** ${{ steps.commit_info.outputs.timestamp }}
+            
+            ## Installation Instructions
+            1. Download the `${{ env.RELEASE_ZIP_NAME }}` file
+            2. Extract the ZIP to a folder
+            3. Install Python 3.11 or higher
+            4. Open a terminal in the extracted folder
+            5. Run: `pip install -r requirements.txt`
+            6. Run: `python run.py`
+            7. Access the application at http://localhost:8080
+          files: |
+            ${{ env.RELEASE_ZIP_NAME }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
