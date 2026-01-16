@@ -1,237 +1,266 @@
-# Transcript-Audio
-Aplicação web para transcrição de áudio com backend em Python/Flask e frontend Vite/React. Permite enviar arquivos, acompanhar processamento, gerenciar modelos e histórico de transcrições, integrando o Whisper para converter áudio em texto de forma rápida e organizada.
+# 🎙️ Transcript-Audio
 
-## Funcionalidades
+**Transcreva áudios com qualidade profissional usando Whisper.cpp**
+
+[![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-Backend-000000?logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
+[![Vite](https://img.shields.io/badge/Vite-Frontend-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![React](https://img.shields.io/badge/React-UI-61DAFB?logo=react&logoColor=000000)](https://react.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+Aplicação web para transcrição de áudio com backend em **Python/Flask** e frontend **Vite/React**. Permite enviar arquivos, acompanhar processamento, gerenciar modelos e histórico de transcrições, integrando o **Whisper** para converter áudio em texto de forma rápida e organizada.
+
+---
+
+## ✨ Destaques
+
+- 🚀 **Whisper.cpp local**: transcrição rápida sem depender de APIs externas
+- 📦 **Upload em lote** com sessões nomeadas
+- 🧠 **Múltiplos modelos** (tiny, base, small, medium, large)
+- 🌍 **Detecção automática de idioma**
+- 🧾 **Exportação**: TXT, JSON e Markdown
+- 🗂️ **Histórico** + **gerenciamento de armazenamento**
+
+---
+
+## 🧰 Stack
+
+- **Backend**: Python + Flask
+- **Frontend**: Vite + React
+- **Transcrição**: whisper.cpp
+- **Conversão de áudio**: FFmpeg
+
+---
+
+## ✅ Funcionalidades
 
 ### Transcrição
-- ✅ **Whisper.cpp Integration** - Transcrição com IA usando modelos otimizados localmente
-- ✅ Suporte a múltiplos formatos de áudio (MP3, WAV, OGG, OPUS, M4A, FLAC)
-- ✅ **Múltiplos Modelos** - tiny, base, small, medium, large (com visualização de tamanho)
-- ✅ Suporte a múltiplos idiomas com detecção automática
+- Integração com **whisper.cpp**
+- Suporte a MP3, WAV, OGG, OPUS, M4A, FLAC
+- Modelos: tiny, base, small, medium, large
+- Detecção automática de idioma
 
 ### Upload e Processamento
-- ✅ Interface intuitiva com drag-and-drop
-- ✅ **Upload em Lote** - Processe múltiplos arquivos de uma vez
-- ✅ **Sessões Nomeadas** - Organize transcrições em lote com nome personalizado
-- ✅ Conversão automática para WAV
+- Drag-and-drop
+- **Upload em lote**
+- **Sessões nomeadas**
+- Conversão automática para WAV
 
 ### Exportação e Organização
-- ✅ Exportação em diferentes formatos (TXT, JSON, Markdown)
-- ✅ **Resumo Automático** - Arquivo Markdown consolidando todas as transcrições de uma sessão
-- ✅ Histórico de transcrições com data e tamanho
-- ✅ Cópia rápida para área de transferência
+- TXT, JSON, Markdown
+- **Resumo automático** por sessão
+- Histórico com data e tamanho
+- Cópia rápida para área de transferência
 
 ### Interface
-- ✅ Interface responsiva e moderna
-- ✅ **Visualização de Modelos** - Cards visuais mostrando modelos baixados e seus tamanhos
-- ✅ **Indicador de Modelo** - Mostra qual modelo está sendo usado durante a transcrição
-- ✅ **Gerenciamento de Armazenamento** - Visualize e limpe uploads e transcrições
+- Responsiva e moderna
+- Indicador do modelo em uso
+- Visão dos modelos baixados
+- Gerenciamento de armazenamento
 
-## Requisitos
+---
+
+## ⚙️ Requisitos
 
 - Python 3.8+
-- FFmpeg (para conversão de formatos de áudio)
-- whisper.cpp compilado (incluído na pasta `whisper.cpp/`)
+- FFmpeg
+- whisper.cpp compilado
 
-## Instalação
+---
 
-### 1. Clonar o repositório
+## 🚀 Instalação
+
+### 1) Clonar o repositório
 ```bash
 git clone <url-do-repositorio>
 cd Transcript_audio
 ```
 
-### 2. Criar ambiente virtual
+### 2) Criar ambiente virtual
 ```bash
 python3 -m venv venv
 ```
 
-### 3. Ativar ambiente virtual
-- **macOS/Linux:**
-  ```bash
-  source venv/bin/activate
-  ```
-- **Windows:**
-  ```bash
-  venv\Scripts\activate
-  ```
+### 3) Ativar o ambiente
+**macOS/Linux**
+```bash
+source venv/bin/activate
+```
 
-### 4. Instalar dependências
+**Windows**
+```bash
+venv\Scripts\activate
+```
+
+### 4) Instalar dependências
 ```bash
 pip install -r requirements.txt
 ```
 
-### 5. Instalar FFmpeg
-
-**macOS (com Homebrew):**
+### 5) Instalar o FFmpeg
+**macOS (Homebrew)**
 ```bash
 brew install ffmpeg
 ```
 
-**Ubuntu/Debian:**
+**Ubuntu/Debian**
 ```bash
 sudo apt update
 sudo apt install ffmpeg
 ```
 
-**Windows:**
+**Windows**
 - Baixe em https://ffmpeg.org/download.html
 - Adicione ao PATH do sistema
 
-### 6. Baixar modelos Whisper
-
-Os modelos devem estar na pasta `whisper.cpp/models/`. Para baixar:
-
+### 6) Baixar modelos Whisper
 ```bash
 cd whisper.cpp
 ./models/download-ggml-model.sh base
 ```
+Modelos: `tiny`, `base`, `small`, `medium`, `large`, `large-v2`, `large-v3`
 
-Modelos disponíveis: `tiny`, `base`, `small`, `medium`, `large`, `large-v2`, `large-v3`
+---
 
-## Uso
+## ▶️ Uso
 
-### Forma Rápida (Recomendado)
+### Forma rápida (recomendado)
 ```bash
 ./start.sh
 ```
 
-### Forma Manual
+### Forma manual
 ```bash
 source venv/bin/activate
 python run.py
 ```
 
-### Acessar a interface
-Abra seu navegador e acesse: **http://localhost:8080**
+Acesse: **http://localhost:8080**
 
-## Como Usar
+---
 
-### Transcrição de Arquivo Único
+## 🧭 Como usar
+
+### Arquivo único
 1. Selecione o modo "Arquivo Único"
-2. Arraste e solte um arquivo de áudio ou clique para selecionar
-3. Escolha o modelo e idioma nas configurações
+2. Arraste e solte um áudio
+3. Escolha modelo e idioma
 4. Clique em "Iniciar Transcrição"
-5. Aguarde o processamento
-6. Exporte no formato desejado
+5. Exporte no formato desejado
 
-### Transcrição em Lote
+### Transcrição em lote
 1. Selecione o modo "Lote (Múltiplos)"
-2. (Opcional) Digite um nome para a sessão (ex: "Reunião 10/12")
-3. Arraste múltiplos arquivos ou selecione vários
-4. Escolha o modelo e idioma
-5. Clique em "Iniciar Transcrição"
-6. Acompanhe o progresso de cada arquivo
-7. Ao finalizar, todas as transcrições estarão disponíveis
+2. (Opcional) Nomeie a sessão
+3. Selecione vários arquivos
+4. Clique em "Iniciar Transcrição"
+5. Acompanhe o progresso
 
 ### Gerenciamento
-- **Modelos**: Visualize e selecione modelos na seção "Modelos Whisper Disponíveis"
-- **Histórico**: Veja todas as transcrições anteriores
-- **Armazenamento**: Monitore e limpe uploads/transcrições na seção de gerenciamento
+- **Modelos**: seção "Modelos Whisper Disponíveis"
+- **Histórico**: transcrições anteriores
+- **Armazenamento**: limpar uploads/transcrições
 
-## Estrutura do Projeto
+---
+
+## 🗂️ Estrutura do projeto
 
 ```
 Transcript_audio/
 ├── app.py                 # Aplicação Flask principal
-├── whisper_wrapper.py     # Wrapper Python para whisper.cpp
-├── run.py                 # Script de inicialização com verificações
-├── start.sh               # Script de inicialização rápida
+├── whisper_wrapper.py     # Wrapper para whisper.cpp
+├── run.py                 # Script de inicialização
+├── start.sh               # Inicialização rápida
 ├── requirements.txt       # Dependências Python
-├── README.md              # Documentação
-├── uploads/               # Arquivos de áudio enviados (temporários)
-├── transcriptions/        # Transcrições salvas
 ├── templates/
 │   └── index.html         # Interface web
-├── static/
-│   ├── css/               # Arquivos CSS
-│   └── js/                # Arquivos JavaScript
-├── whisper.cpp/           # Binários e modelos do whisper.cpp
-│   ├── build/bin/         # Executável whisper-cli
-│   └── models/            # Modelos .bin baixados
-└── venv/                  # Ambiente virtual
+├── frontend/              # UI Vite/React
+├── uploads/               # Áudios enviados
+├── transcriptions/        # Transcrições salvas
+└── whisper.cpp/           # Binários e modelos do whisper.cpp
 ```
 
-## Formatos Suportados
+---
 
-### Áudio (Entrada)
-- MP3, WAV, OGG, OPUS, M4A, FLAC
-- Tamanho máximo: 100MB por arquivo (500MB total em lote)
+## 📦 Formatos suportados
 
-### Exportação (Saída)
-- **TXT**: Texto puro
-- **JSON**: Estruturado com metadados
-- **Markdown**: Formatado para documentação
+**Entrada**: MP3, WAV, OGG, OPUS, M4A, FLAC
 
-## Modelos Whisper
+**Saída**: TXT, JSON, Markdown
+
+---
+
+## 🧪 Modelos Whisper
 
 | Modelo | Tamanho | Velocidade | Qualidade |
 |--------|---------|------------|-----------|
-| tiny | ~75 MB | Muito rápido | Básica |
-| base | ~142 MB | Rápido | Boa |
-| small | ~466 MB | Moderado | Muito boa |
+| tiny   | ~75 MB  | Muito rápido | Básica |
+| base   | ~142 MB | Rápido | Boa |
+| small  | ~466 MB | Moderado | Muito boa |
 | medium | ~1.5 GB | Lento | Excelente |
-| large | ~3 GB | Muito lento | Melhor |
+| large  | ~3 GB   | Muito lento | Melhor |
 
-## Idiomas Suportados
+---
 
-- 🇧🇷 Português
-- 🇺🇸 Inglês
-- 🇪🇸 Espanhol
-- 🇫🇷 Francês
-- 🇩🇪 Alemão
-- 🇮🇹 Italiano
-- 🌐 Detecção Automática
+## 🌍 Idiomas suportados
 
-## API Endpoints
+- Português
+- Inglês
+- Espanhol
+- Francês
+- Alemão
+- Italiano
+- Detecção automática
+
+---
+
+## 🔌 API Endpoints
 
 | Endpoint | Método | Descrição |
 |----------|--------|-----------|
 | `/` | GET | Interface web |
-| `/upload` | POST | Upload de arquivo único |
-| `/upload_batch` | POST | Upload de múltiplos arquivos |
-| `/transcribe` | POST | Iniciar transcrição única |
-| `/transcribe_batch` | POST | Iniciar transcrição em lote |
-| `/transcription_status` | GET | Status da transcrição única |
-| `/batch_status/<id>` | GET | Status da transcrição em lote |
+| `/upload` | POST | Upload único |
+| `/upload_batch` | POST | Upload em lote |
+| `/transcribe` | POST | Transcrição única |
+| `/transcribe_batch` | POST | Transcrição em lote |
+| `/transcription_status` | GET | Status da transcrição |
+| `/batch_status/<id>` | GET | Status do lote |
 | `/export` | POST | Exportar transcrição |
-| `/history` | GET | Histórico de transcrições |
-| `/models` | GET | Lista de modelos disponíveis |
-| `/storage_info` | GET | Informações de armazenamento |
+| `/history` | GET | Histórico |
+| `/models` | GET | Modelos disponíveis |
+| `/storage_info` | GET | Info de armazenamento |
 | `/clear_uploads` | POST | Limpar uploads |
 | `/clear_history` | POST | Limpar histórico |
 
-## Troubleshooting
+---
 
-### Erro: "FFmpeg not found"
-- Instale o FFmpeg seguindo as instruções acima
-- Verifique se está no PATH do sistema
+## 🛠️ Troubleshooting
 
-### Erro: "Modelo não encontrado"
-- Baixe o modelo usando o script em `whisper.cpp/models/`
-- Verifique se o arquivo `.bin` está na pasta correta
+**FFmpeg não encontrado**
+- Instale o FFmpeg
+- Verifique o PATH
 
-### Erro: "Executável main não encontrado"
-- Compile o whisper.cpp: `cd whisper.cpp && make`
-- Verifique se o executável está em `whisper.cpp/build/bin/whisper-cli`
+**Modelo não encontrado**
+- Baixe em `whisper.cpp/models/`
 
-### Transcrição de baixa qualidade
-- Use áudio com boa qualidade e sem ruído
-- Experimente um modelo maior (small, medium)
-- Especifique o idioma ao invés de usar detecção automática
+**Executável não encontrado**
+- Compile: `cd whisper.cpp && make`
+- Verifique `whisper.cpp/build/bin/whisper-cli`
 
-### Porta 8080 em uso
-- Verifique se há outra instância rodando
-- Mude a porta em `app.py` e `run.py`
+**Porta 8080 em uso**
+- Finalize outra instância ou altere a porta
 
-## Licença
+---
 
-MIT License - sinta-se livre para usar e modificar conforme necessário.
+## 📄 Licença
 
-## Contribuições
+MIT License
 
-Contribuições são bem-vindas! Por favor:
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature
-3. Faça commit das mudanças
+---
+
+## 🤝 Contribuições
+
+Contribuições são bem-vindas:
+1. Faça um fork
+2. Crie uma branch
+3. Faça commit
 4. Abra um Pull Request
