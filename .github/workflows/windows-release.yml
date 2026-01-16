@@ -23,8 +23,13 @@ jobs:
       
       - name: Install backend dependencies
         run: |
+          if (-not (Test-Path requirements.txt)) {
+            Write-Error "requirements.txt not found"
+            exit 1
+          }
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+        shell: pwsh
       
       - name: Set up Node.js 20
         uses: actions/setup-node@v4
@@ -33,13 +38,19 @@ jobs:
       
       - name: Install frontend dependencies
         run: |
+          if (-not (Test-Path frontend)) {
+            Write-Error "frontend directory not found"
+            exit 1
+          }
           cd frontend
           npm install
+        shell: pwsh
       
       - name: Build frontend
         run: |
           cd frontend
           npm run build
+        shell: pwsh
       
       - name: Package application
         run: |
@@ -68,6 +79,10 @@ jobs:
           }
           
           # Copy frontend build
+          if (-not (Test-Path frontend/dist)) {
+            Write-Error "Frontend build failed - dist directory not found"
+            exit 1
+          }
           Copy-Item -Path frontend/dist -Destination release/frontend-dist -Recurse
           
           # Create ZIP archive
