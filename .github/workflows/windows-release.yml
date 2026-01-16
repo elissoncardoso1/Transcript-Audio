@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+  RELEASE_ZIP_NAME: transcript-audio-windows.zip
+
 jobs:
   build-windows:
     runs-on: windows-latest
@@ -43,13 +46,21 @@ jobs:
           mkdir release
           
           # Copy backend files
-          Copy-Item -Path app.py -Destination release/
-          Copy-Item -Path run.py -Destination release/
-          Copy-Item -Path requirements.txt -Destination release/
-          Copy-Item -Path whisper_wrapper.py -Destination release/
-          Copy-Item -Path whisper.cpp -Destination release/
-          Copy-Item -Path LICENSE -Destination release/
-          Copy-Item -Path README.md -Destination release/
+          $files = @(
+            "app.py",
+            "run.py",
+            "requirements.txt",
+            "whisper_wrapper.py",
+            "whisper.cpp",
+            "LICENSE",
+            "README.md"
+          )
+          
+          foreach ($file in $files) {
+            if (Test-Path $file) {
+              Copy-Item -Path $file -Destination release/
+            }
+          }
           
           # Copy templates directory if exists
           if (Test-Path templates) {
@@ -60,7 +71,7 @@ jobs:
           Copy-Item -Path frontend/dist -Destination release/frontend-dist -Recurse
           
           # Create ZIP archive
-          Compress-Archive -Path release/* -DestinationPath transcript-audio-windows.zip
+          Compress-Archive -Path release/* -DestinationPath $env:RELEASE_ZIP_NAME
         shell: pwsh
       
       - name: Get commit info
@@ -85,7 +96,7 @@ jobs:
             **Built on:** ${{ steps.commit_info.outputs.timestamp }}
             
             ## Installation Instructions
-            1. Download the `transcript-audio-windows.zip` file
+            1. Download the `${{ env.RELEASE_ZIP_NAME }}` file
             2. Extract the ZIP to a folder
             3. Install Python 3.11 or higher
             4. Open a terminal in the extracted folder
@@ -93,7 +104,7 @@ jobs:
             6. Run: `python run.py`
             7. Access the application at http://localhost:8080
           files: |
-            transcript-audio-windows.zip
+            ${{ env.RELEASE_ZIP_NAME }}
           draft: false
           prerelease: false
         env:
