@@ -1,0 +1,100 @@
+name: Build and Release Windows
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm install
+      
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm run build
+      
+      - name: Package application
+        run: |
+          mkdir release
+          
+          # Copy backend files
+          Copy-Item -Path app.py -Destination release/
+          Copy-Item -Path run.py -Destination release/
+          Copy-Item -Path requirements.txt -Destination release/
+          Copy-Item -Path whisper_wrapper.py -Destination release/
+          Copy-Item -Path whisper.cpp -Destination release/
+          Copy-Item -Path LICENSE -Destination release/
+          Copy-Item -Path README.md -Destination release/
+          
+          # Copy templates directory if exists
+          if (Test-Path templates) {
+            Copy-Item -Path templates -Destination release/ -Recurse
+          }
+          
+          # Copy frontend build
+          Copy-Item -Path frontend/dist -Destination release/frontend-dist -Recurse
+          
+          # Create ZIP archive
+          Compress-Archive -Path release/* -DestinationPath transcript-audio-windows.zip
+        shell: pwsh
+      
+      - name: Get commit info
+        id: commit_info
+        run: |
+          $SHORT_SHA = $env:GITHUB_SHA.Substring(0,7)
+          $TIMESTAMP = Get-Date -Format "yyyyMMdd-HHmmss"
+          echo "short_sha=$SHORT_SHA" >> $env:GITHUB_OUTPUT
+          echo "timestamp=$TIMESTAMP" >> $env:GITHUB_OUTPUT
+        shell: pwsh
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: release-${{ steps.commit_info.outputs.timestamp }}-${{ steps.commit_info.outputs.short_sha }}
+          name: Windows Release ${{ steps.commit_info.outputs.timestamp }}
+          body: |
+            Automated Windows release build
+            
+            **Commit:** ${{ github.sha }}
+            **Branch:** ${{ github.ref_name }}
+            **Built on:** ${{ steps.commit_info.outputs.timestamp }}
+            
+            ## Installation Instructions
+            1. Download the `transcript-audio-windows.zip` file
+            2. Extract the ZIP to a folder
+            3. Install Python 3.11 or higher
+            4. Open a terminal in the extracted folder
+            5. Run: `pip install -r requirements.txt`
+            6. Run: `python run.py`
+            7. Access the application at http://localhost:8080
+          files: |
+            transcript-audio-windows.zip
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
